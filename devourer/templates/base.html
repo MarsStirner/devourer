@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru" ng-app="Devourer">
+<head>
+    <title>{{ config['TITLE'] }} {% block title %}{% endblock %}</title>
+    <meta charset="utf-8">
+    <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+    <link href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}" media="screen, print" rel="stylesheet">
+    <link href="{{ url_for('static', filename='vendor/font-awesome/font-awesome.min.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <script src="{{ url_for('static', filename='vendor/jquery/jquery.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/angular.js/angular.js') }}"></script>
+    {%- block modules_css %}{% endblock -%}
+</head>
+<body id="top">
+<div class="wrapper">
+    <div class="container">
+    {%- block content %}
+    {% endblock -%}
+    </div>
+</div><!-- /#wrap -->
+
+{%- block modules_js %}
+<script src="{{ url_for('static', filename='vendor/underscore.js') }}"></script>
+<script src="{{ url_for('static', filename='vendor/angular.js/angular-sanitize.min.js') }}"></script>
+<script src="{{ url_for('static', filename='vendor/angular.js/angular-locale_ru-ru.js') }}"></script>
+<script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.min.js') }}"></script>
+
+<script src="{{ url_for('static', filename='js/devourer.js') }}"></script>
+<script src="{{ url_for('static', filename='vendor/ng-file-upload/ng-file-upload.min.js') }}"></script>
+{% endblock -%}
+</body>
+</html>

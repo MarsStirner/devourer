@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<div ng-controller="FileUploadFormCtrl" class="ng-cloak">
+    <h3>Тест файлов</h3>
+    <div class="row">
+        <div class="col-md-8">
+            <ng-form name="filesForm">
+                <div ng-repeat="file in new_files">
+                    <input type="text" ng-model="file.name">
+                    <input type="text" ng-model="file.note">
+                    <input type="file" ngf-select ng-model="file.file" ngf-change="setFileName(file)">
+{#                        <input type="file" ngf-select ng-model="file.file" ngf-pattern="'image/*'"#}
+{#                            ngf-accept="'image/*'" ngf-max-size="20MB" ngf-change="setFileName(file)">#}
+                    <br>
+                </div>
+                <br>
+                <button type="button" class="btn btn-default" ng-click="addNewFile()">Добавить файл</button>
+
+                <button type="submit" class="btn btn-primary" ng-click="uploadFiles()">Отправить</button>
+            </ng-form>
+
+            <hr>
+
+            <div>
+            <ul>
+                <li ng-repeat="fmeta in fmetas"><a ng-href="[[fmeta.url]]" target="_blank">[[ fmeta.name ]]</a></li>
+            </ul>
+            </div>
+
+            <pre>[[ files | json ]]</pre>
+
+            <!--Upload right away after file selection:-->
+            <!--<div class="button btn btn-default" ngf-select="upload($file)">Upload on file select</div>-->
+            <!--<div class="button btn btn-default" ngf-select="uploadFiles($files)" multiple="multiple">Upload on file select</div>-->
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block modules_js %}
+    {{ super() }}
+    <script src="{{ url_for('static', filename='js/upload-form.js') }}"></script>
+{% endblock %}
