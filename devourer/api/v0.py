@@ -4,19 +4,20 @@ import itertools
 import logging
 
 from flask import request
+from flask_cors import cross_origin
 
 from devourer.api.app import module
 from devourer.lib.files import (save_new_file, save_file_attach, get_file_meta_list,
     represent_file_meta, get_file_info)
-from hitsl_utils.wm_api import api_method, ApiException, RawApiResult, crossdomain
+from hitsl_utils.wm_api import api_method, ApiException, RawApiResult
 from hitsl_utils.safe import parse_json
 
 
 logger = logging.getLogger('simple')
 
 
-@module.route('/0/upload', methods=['POST'])
-@crossdomain('*', methods=['POST'])
+@module.route('/0/upload', methods=['POST', 'OPTIONS'])
+@cross_origin(supports_credentials=True)  # CORS_ORIGINS from app config
 @api_method
 def api_0_upload():
     # files in form data
