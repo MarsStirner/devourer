@@ -23,15 +23,12 @@
 
             <div>
             <ul>
-                <li ng-repeat="fmeta in fmetas"><a ng-href="[[fmeta.url]]" target="_blank">[[ fmeta.name ]]</a></li>
+                <li ng-repeat="fmeta in fmetas"><a ng-href="[[fmeta.url]]">[[ fmeta.name ]]</a></li>
             </ul>
             </div>
 
             <pre>[[ files | json ]]</pre>
 
-            <!--Upload right away after file selection:-->
-            <!--<div class="button btn btn-default" ngf-select="upload($file)">Upload on file select</div>-->
-            <!--<div class="button btn btn-default" ngf-select="uploadFiles($files)" multiple="multiple">Upload on file select</div>-->
         </div>
     </div>
 </div>

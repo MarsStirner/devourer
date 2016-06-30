@@ -8,7 +8,7 @@ from flask_cors import cross_origin
 
 from devourer.api.app import module
 from devourer.lib.files import (save_new_file, save_file_attach, get_file_meta_list,
-    represent_file_meta, get_file_info)
+    represent_file_meta, get_file_info, make_filename_header)
 from hitsl_utils.wm_api import api_method, ApiException, RawApiResult
 from hitsl_utils.safe import parse_json
 
@@ -77,9 +77,11 @@ def api_0_file_download(fileid):
     headers = {
         'Content-Description': 'File Transfer',
         'Cache-Control': 'no-cache',
-        'Content-Type': 'application/octet-stream',
-        # 'Content-Length': file_size,
-        'Content-Disposition': u'attachment; filename={0}'.format(fileinfo['name']).encode('utf-8'),
+
+        # will update default content-type of jsonify_ok()
+        'content-type': fileinfo['mime'] or 'application/octet-stream',
+        'Content-Disposition': u"attachment; {0}".format(make_filename_header(fileinfo['name'])),
+
         # nginx: http://wiki.nginx.org/NginxXSendfile
         'X-Accel-Redirect': u'/protected_files/{0}'.format(fileinfo['path']).encode('utf-8')
     }

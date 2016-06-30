@@ -4,6 +4,7 @@ import os
 import mimetypes
 import uuid
 import logging
+import urllib
 
 from flask import url_for
 
@@ -80,13 +81,15 @@ def get_file_info(uuid_hex):
         if fmeta:
             fname = fmeta.name
             mime = fmeta.mimetype
-            if mimetypes.guess_type(fname) != mime:
+            guessed_mime = mimetypes.guess_type(fname)[0]
+            if guessed_mime != mime:
                 ext = fmeta.extension
                 if ext:
                     fname = u'{0}.{1}'.format(fname, ext)
             return {
                 'name': fname,
-                'path': make_file_path(uuid_hex)
+                'path': make_file_path(uuid_hex),
+                'mime': mime
             }
 
 
@@ -140,3 +143,11 @@ def make_file_url(fmeta):
             url_for('.api_0_file_download', fileid=fmeta.uuid.hex)
             # url_for('serve_file', fileid=fmeta.uuid.hex)
         )
+
+
+def make_filename_header(filename):
+    # using rfc5987 for filename encoding in 'Content-Disposition' header
+    # another possible choice is RFC 6266
+    if isinstance(filename, unicode):
+        filename = filename.encode('utf-8')
+    return u"filename*=UTF-8''{0}".format(urllib.quote(filename))
