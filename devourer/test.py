@@ -10,7 +10,7 @@ from contextlib import contextmanager
 
 
 coldstar_url = os.getenv('TEST_COLDSTAR_URL', 'http://127.0.0.1:6098')
-devourer_url = os.getenv('TEST_DEVOURER_URL', 'http://127.0.0.1:6900')
+devourer_url = os.getenv('TEST_DEVOURER_URL', 'http://127.0.0.1:6606')
 auth_token_name = 'CastielAuthToken'
 
 login = os.getenv('TEST_LOGIN', u'ВнешСис')
@@ -100,7 +100,7 @@ def test_api_fileupload(token):
 
         info = {
             'files_info': [
-                {'name': 'test1.txt', 'note': u'заметка'}
+                {'name': 'файл1.txt', 'note': u'заметка'}
             ]
         }
         files = {
@@ -149,14 +149,46 @@ def test_api_fileupload_multiple(token):
     return res.json()
 
 
-if __name__ == '__main__':
-    # test_auth(login, password)
+def test_api_fileupload_errand_file(token):
+    test_file = tempfile.NamedTemporaryFile(suffix='test_upload_file.txt')
+    with test_file:
+        test_file.write(u'тестовый файл'.encode('utf-8'))
+        test_file.seek(0)
 
-    with make_login() as token:
+        info = {
+            'files_info': [
+                {'name': 'файл1.txt', 'note': u'заметка'}
+            ],
+            'attach_data': {
+                'errand_id': 135,
+                'doctor_code': '-1',
+                'hospital_code': '-1'
+            }
+        }
+        files = {
+            'files': ('file1.txt'.encode('utf-8'), test_file),
+            'info': ('', json.dumps(info))
+        }
+        res = requests.post(
+            devourer_url + '/api/0/upload/errand_file',
+            files=files,
+            cookies={auth_token_name: token}
+        )
+        print res
+    return res.json()
+
+
+if __name__ == '__main__':
+    test_auth(login, password)
+
+    # with make_login() as token:
         # test_api_download(token, 'af861f33fa0f4e729d33a8dd3ea958ba')
 
         # res = test_api_fileupload(token)
         # print unicode(res).decode('unicode-escape')
 
-        res = test_api_fileupload_multiple(token)
-        print unicode(res).decode('unicode-escape')
+        # res = test_api_fileupload_multiple(token)
+        # print unicode(res).decode('unicode-escape')
+
+        # res = test_api_fileupload_errand_file(token)
+        # print unicode(res).decode('unicode-escape')
