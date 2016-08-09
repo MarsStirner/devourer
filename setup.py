@@ -25,7 +25,7 @@ extra_files.extend(package_files('devourer/templates'))
 
 setup(
     name='devourer',
-    version='0.1.0',
+    version='0.1.1',
     url='https://stash.bars-open.ru/scm/medvtr/devourer.git',
     author='hitsl',
     description='MIS file storage system',
