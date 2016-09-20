@@ -8,7 +8,7 @@ import urllib
 
 from flask import url_for
 
-from devourer.models import FileMeta, ErrandFileAttach, FileAttachType
+from devourer.models import FileMeta, ErrandFileAttach, ActionFileAttach, FileAttachType
 from devourer.systemwide import app, db
 from hitsl_utils.safe import safe_uuid
 
@@ -103,6 +103,8 @@ def create_file_attach(fmeta, attach_data):
     attach_type = attach_data.get('attach_type')
     if attach_type == FileAttachType.errand[0]:
         attach = create_errand_file_attach(fmeta, attach_data)
+    elif attach_type == FileAttachType.action[0]:
+        attach = create_action_file_attach(fmeta, attach_data)
     else:
         raise ValueError('unknown attach_type')
     return attach
@@ -113,6 +115,15 @@ def create_errand_file_attach(fmeta, attach_data):
     set_person_id = attach_data['set_person_id']
     filemeta_id = fmeta.id
     efa = ErrandFileAttach(errand_id=errand_id, filemeta_id=filemeta_id,
+                           setPerson_id=set_person_id)
+    return efa
+
+
+def create_action_file_attach(fmeta, attach_data):
+    action_id = attach_data['action_id']
+    set_person_id = attach_data['set_person_id']
+    filemeta_id = fmeta.id
+    efa = ActionFileAttach(action_id=action_id, filemeta_id=filemeta_id,
                            setPerson_id=set_person_id)
     return efa
 
