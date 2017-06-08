@@ -59,6 +59,52 @@ def api_0_upload():
     }
 
 
+@module.route('/1/upload', methods=['POST', 'OPTIONS'])
+@cross_origin(supports_credentials=True)  # CORS_ORIGINS from app config
+@api_method
+def api_1_upload():
+    # files in form data
+    files = request.files.getlist('files')
+    if not files:
+        raise ApiException(400, u'Нет файлов для загрузки')
+
+    # additional info can be in form data separate fields
+    # file_names = request.form.getlist('file[name]')
+    # file_notes = request.form.getlist('file[note]')
+
+    # and additional info can be inf form data `info` json string
+    info = parse_json(request.form.get('info')) or {}
+    files_info = info.get('files_info') or []
+    attach_data = info.get('attach_data')
+
+    errors = []
+    metas = []
+    attaches = []
+    for file, file_info in itertools.izip_longest(files, files_info):
+        try:
+            fmeta = save_new_file(file, file_info)
+        except Exception, e:
+            logger.exception(u'Ошибка сохранения файла {0}'.format(file.filename))
+            errors.append({
+                'info': file_info,
+                'exc_message': unicode(e)
+            })
+        else:
+            if attach_data is not None:
+                attach = save_file_attach(fmeta, attach_data)
+            else:
+                attach = None
+            metas.append(fmeta)
+            attaches.append(attach)
+    return {
+        'files': [
+            represent_file_meta(fmeta, fattach)
+            for fmeta, fattach in zip(metas, attaches)
+        ],
+        'errors': errors
+    }
+
+
 @module.route('/0/file_list', methods=['GET'])
 @api_method
 def api_0_file_list_get():

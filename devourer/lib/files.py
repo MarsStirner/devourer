@@ -97,6 +97,7 @@ def save_file_attach(fmeta, attach_data):
     fa = create_file_attach(fmeta, attach_data)
     db.session.add(fa)
     db.session.commit()
+    return fa
 
 
 def create_file_attach(fmeta, attach_data):
@@ -137,14 +138,17 @@ def get_file_meta_list():
     ]
 
 
-def represent_file_meta(fmeta):
-    return {
+def represent_file_meta(fmeta, attach=None):
+    dc = {
         'id': fmeta.id,
         'name': fmeta.name,
         'mimetype': fmeta.mimetype,
         'note': fmeta.note,
-        'url': make_file_url(fmeta)
+        'url': make_file_url(fmeta),
     }
+    if attach:
+        dc['attach'] = attach
+    return dc
 
 
 def make_file_url(fmeta):
